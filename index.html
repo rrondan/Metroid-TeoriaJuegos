@@ -1,0 +1,32 @@
+<html>
+<head>
+	<script type="text/javascript" src='phaser.min.js'></script>
+	<script type="text/javascript" src='Scripts/Boost.js'></script>
+	<script type="text/javascript" src='Scripts/Preloader.js'></script>
+	<script type="text/javascript" src='Scripts/Menu.js'></script>
+	<script type="text/javascript" src='Scripts/Game.js'></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<title>Naves</title>
+	<style>
+		  body {
+		  	background-color: black;
+		    padding: 0px;
+		    margin: 0px;
+		  }
+		  </style>
+</head>
+<body>
+<script type="text/javascript">
+	window.onload = function(){
+		var game = new Phaser.Game(700,350,Phaser.AUTO);
+		var Global = {};
+		game.state.add('Boost',Boost);
+		game.state.add('Preloader',Preloader);
+		game.state.add('Menu',Menu);
+		game.state.add('Game',Game);
+		game.state.start('Boost');
+	}
+</script>
+</body>
+</html>
