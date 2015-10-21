@@ -9,6 +9,9 @@ Boost.prototype = {
 	    this.scale.pageAlignHorizontally = true;
 	    this.scale.pageAlignVertically = true;
 	    this.game.physics.startSystem(Phaser.Physics.ARCADE);    
+
+    	this.load.image('background', 'assets/images/background.png');
+
 	},
 	create:function(){
 		
