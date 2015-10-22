@@ -7,16 +7,15 @@ Game.prototype = {
     create: function () {
 
 			this.score = 0;
-		this.background = this.add.tileSprite(0,0,
-				this.world.width,
-				this.world.height,'background');
-		this.background.tileScale.y = 2;
-		this.worldSpeed = 200;
-		
+		this.background = this.add.tileSprite(0,0,this.world.width,this.world.height,'background');
+		this.background.tileScale.y = 2.50;
+		//Global.worldSpeed = 200;
+		this.cursors = this.game.input.keyboard.createCursorKeys();
+    this.game.world.setBounds(0, 0, 49000, 49000);
 		this.coinsPool = this.add.group();
 		this.coinsPool.enableBody = true;
 		
-		this.background.autoScroll(-this.worldSpeed,0);
+		this.background.autoScroll(-Global.worldSpeed,0);
 
 		this.isJumping = false;
 		this.jumpPeaked = false;
@@ -24,7 +23,6 @@ Game.prototype = {
 			this.frontStyle={front: '40px Arial',fill:'#FFCC00',stroke:'#333',strokeThickness:5};//stroke = borde
 		this.textScore = this.add.text(150,100,'Seig Heil',this.frontStyle);
 		this.textScore.text = 'Seig Heil';
-
 		//this.water = this.add.tileSprite(0,this.world.height-30,this.world.width,this.world.height,'water');
 	//	this.water.autoScroll(-this.worldSpeed/2,0);
 
@@ -32,6 +30,7 @@ Game.prototype = {
 		this.player.anchor.setTo(0.5,0.5);
 		this.player.animations.add('running',[0,1,2,3,2,1],15,true);
 		this.player.play('running');
+        this.game.camera.follow(this.player);
 
 		this.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -43,10 +42,14 @@ Game.prototype = {
 
 
 		this.currentPlatform = new Platform(this.game,this.floorPool,
-			12,0,200,-this.worldSpeed,this.coinsPool
+			200,0,240,0/*Global.worldSpeed*/,this.coinsPool
 			);
 
 		this.platformPool.add(this.currentPlatform);
+        
+         if(Global.refresh){
+             this.gameOver();
+         }
     },
     update: function () {
         this.platformPool.forEachAlive(function (platform) {
@@ -70,11 +73,44 @@ Game.prototype = {
         if (this.player.top >= this.game.world.height) {
             this.gameOver();
         }
+
+
+if(!this.cursors.left.isDown && !this.cursors.right.isDown){
+
+        this.background.autoScroll(0,0);
+}
+        if(this.cursors.left.isDown){
+this.player.body.velocity.x = -250;
+//this.player.body.acceleration.x-=50;
+//this.player.play('walking') ;
+//this.player.scale.setTo(1,1);}
+        Global.worldSpeed = -200;
+        this.background.autoScroll(-Global.worldSpeed,0);
+
+}
+        if(this.cursors.right.isDown){
+this.player.body.velocity.x = 250;
+//this.player.body.acceleration.x-=50;
+//this.player.play('walking') ;
+//this.player.scale.setTo(1,1);}
+        Global.worldSpeed = 200;
+        this.background.autoScroll(-Global.worldSpeed,0);
+}
+
+       if(this.cursors.up.isDown){
+this.player.body.velocity.x = 180;
+//this.player.body.acceleration.x-=50;
+//this.player.play('walking') ;
+//this.player.scale.setTo(1,1);}
+        Global.worldSpeed = 200;
+        this.background.autoScroll(-Global.worldSpeed,0);
+}
     },
     gameOver: function () {
         this.player.kill();
         this.game.world.remove(this.background);
      //<   this.game.world.remove(this.water);
+     Global.refresh = false;
         this.game.state.start('Game');
 
 
@@ -113,9 +149,9 @@ Game.prototype = {
             this.currentPlatform =
             this.platformPool.getFirstDead();
             if (!this.currentPlatform) {
-                this.currentPlatform = new Platform(this.game, this.floorPool, next.numTiles,this.game.world.width + next.separation,next.y, -this.worldSpeed, this.coinsPool);
+                this.currentPlatform = new Platform(this.game, this.floorPool, next.numTiles,this.game.world.width + next.separation,next.y, 0/*-Global.worldSpeed*/, this.coinsPool);
             } else {
-                this.currentPlatform.prepare(next.numTiles,this.game.world.width + next.separation,next.y,-this.worldSpeed, this.coinsPool);
+                this.currentPlatform.prepare(next.numTiles,this.game.world.width + next.separation,next.y,0/*-Global.worldSpeed*/, this.coinsPool);
             }
             this.platformPool.add(this.currentPlatform);
         }

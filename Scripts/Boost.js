@@ -1,4 +1,5 @@
 Boost = function(game){
+
 }
 
 Boost.prototype = {

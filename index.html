@@ -23,7 +23,7 @@
 <script type="text/javascript">
 	window.onload = function(){
 		var game = new Phaser.Game(700,350,Phaser.AUTO);
-		var Global = {};
+		 Global = {worldSpeed: 0,refresh:true};//-200 ,};
 		game.state.add('Boost',Boost);
 		game.state.add('Preloader',Preloader);
 		game.state.add('Menu',Menu);

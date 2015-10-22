@@ -22,7 +22,7 @@ Platform.prototype.prepare = function(numTiles,x,y,speed,coinsPool){
         
         var floor = this.floorPool.getFirstExists(false); //get first dead para el parcial
         if (!floor) {
-            floor = new Phaser.Sprite(this.game,x+i*this.tileSize,y,'floor');
+            floor = new Phaser.Sprite(this.game,x+i*this.tileSize,y,'floor_tile');
         }else{
             floor.reset(x+i*tileSize,y);
         }
@@ -37,7 +37,7 @@ Platform.prototype.prepare = function(numTiles,x,y,speed,coinsPool){
 }
 
 Platform.prototype.addCoins = function(speed){
-    var coinsY = 90 + Math.random()*110;
+    var coinsY = 220   ;//+ Math.random()*110;
     var hascoin;
     this.forEach(function(tile){
         hascoin = Math.random()<=0.4;
