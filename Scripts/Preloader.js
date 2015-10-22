@@ -11,6 +11,8 @@ Preloader.prototype = {
 	this.load.image('wall_boss', 'assets/images/wall_boss.png');
 	this.load.spritesheet('player','assets/images/player_spritesheet.png',51,67,5,2,3);
 
+	this.load.atlasJSONArray('SammusAssets', 'assets/images/Sammus.png', 'animaciones/Sammus.json');
+
 
 	},
 	create:function(){
