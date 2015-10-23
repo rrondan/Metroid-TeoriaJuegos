@@ -1,21 +1,86 @@
 //SAMUS JS
 Samus = function(game,x,y){
 
+	Phaser.Sprite.call(this,game,x,y,'SammusAssets');
+
+	this.game = game;
+	
+	this.body.collideWorldBounds = true;
+	this.body.allowGravity = true;
+
+	this.anchor.setTo(0.5,0.5);
+	game.camera.follow(this);
+	game.physics.arcade.enable(this);
+
+	this.loadAnimations();
+
+	this.inputEnabled = true;
+
+	this.derecha = true;
+	this.izquierda = false;
+	this.arriba = false;
+	this.abajo = false;
+	this.direccion = 0; //Derecha = 0 , Izquierda = 1
+
+
+	this.bindKeys();
+
+	this.animations.play('ParadoDerecha');
+
 };
 
 Samus.prototype = Object.create(Phaser.Sprite.prototype);
 Samus.prototype.constructor = Samus;
 
-Samus.prototype.update = function(){
+Samus.prototype.bindKeys = function(){
 
+	TeclaArriba = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
+	TeclaArriba.onDown.add(this.TeclaArribaPresionado,this);
+	TeclaArriba.onUp.add(this.TeclaArribaonUp,this);
+
+	TeclaAbajo = this.game.input.keyboard.addKey(dPhaser.Keyboard.DOWN);
+	TeclaAbajo.onDown.add(this.TeclaAbajoPresionado,this);
+	TeclaAbajo.onUp.add(this.TeclaAbajoonUp,this);
+
+	TeclaDerecha = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+	TeclaDerecha.onDown.add(this.TeclaDerechaPresionado,this);
+	TeclaDerecha.onUp.add(this.TeclaDerechaonUp,this);
+
+	TeclaIzquierda = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+	TeclaIzquierda.onDown.add(this.TeclaIzquierdaPresionado,this);
+	TeclaIzquierda.onUp.add(this.TeclaIzquierdaonUp,this);
+
+};
+
+Samus.prototype.TeclaArribaPresionado = function(){
+	if(!this.arriba && this.derecha){
+		this.animations.play('DiagonalDerecha');	
+	}else if(!this.arriba && this.izquierda){
+		this.animations.play('DiagonalIzquierda');
+	}else if(!this.arriba && this.direccion == 0){
+		this.animations.play('ArribaD');
+	}else if(!this.arriba && this.direccion == 1){
+		this.animations.play('ArribaI');
+	}
+	this.arriba = true;	
+};
+
+Samus.prototype.TeclaArribaonUp = function(){
+	
+	this.arriba = false;
 }
 
-Samus.prototype.loadAnimations = function(){
-	this.animations.add('Arriba',[
-		'Arriba/0.png',
-		'Arriba/1.png'],10,true,false);
+Samus.prototype.update = function(){
 
-	this.animations.add('Bolita',[
+};
+
+Samus.prototype.loadAnimations = function(){
+	this.animations.add('ArribaD',[
+		'Arriba/1.png'],10,true,false);
+	this.animations.add('ArribaI',[
+		'Arriba/0.png'],10,true,false);
+
+	this.animations.add('BolitaD',[
 		'Bolita/0.png',
 		'Bolita/1.png',
 		'Bolita/2.png',
@@ -27,6 +92,20 @@ Samus.prototype.loadAnimations = function(){
 		'Bolita/8.png',
 		'Bolita/9.png',
 		'Bolita/10.png',
+		'Bolita/1.png',
+		'Bolita/0.png'],15,false,false);
+	this.animations.add('BolitaI',[
+		'Bolita/12.png',
+		'Bolita/11.png',
+		'Bolita/10.png',
+		'Bolita/9.png',
+		'Bolita/8.png',
+		'Bolita/7.png',
+		'Bolita/6.png',
+		'Bolita/5.png',
+		'Bolita/4.png',
+		'Bolita/3.png',
+		'Bolita/2.png',
 		'Bolita/11.png',
 		'Bolita/12.png'],15,false,false);
 
@@ -83,7 +162,8 @@ Samus.prototype.loadAnimations = function(){
 		'Izquierda/9.png'],true,false);
 
 	this.animations.add('QuietoDerecha',[
-		'QuietoDerecha/0.png',
+		'QuietoDerecha/0.png'],true,false);
+	this.animations.add('AgachadoDerecha',[
 		'QuietoDerecha/1.png',
 		'QuietoDerecha/2.png',
 		'QuietoDerecha/3.png',
@@ -91,7 +171,8 @@ Samus.prototype.loadAnimations = function(){
 		'QuietoDerecha/5.png'],true,false);
 
 	this.animations.add('QuietoIzquierda',[
-		'QuieroIzquierda/0.png',
+		'QuieroIzquierda/0.png'],true,false);
+	this.animations.add('AgachadoIzquierda',[
 		'QuieroIzquierda/1.png',
 		'QuieroIzquierda/2.png',
 		'QuieroIzquierda/3.png',
@@ -120,4 +201,4 @@ Samus.prototype.loadAnimations = function(){
 		'VolantinIzquierda/7.png',
 		'VolantinIzquierda/8.png'],false,false);
 
-}
+};
