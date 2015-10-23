@@ -4,6 +4,7 @@ Samus = function(game,x,y){
 	Phaser.Sprite.call(this,game,x,y,'SammusAssets');
 
 	this.game = game;
+	this.velocidad = 150;
 	
 	this.body.collideWorldBounds = true;
 	this.body.allowGravity = true;
@@ -53,9 +54,9 @@ Samus.prototype.bindKeys = function(){
 };
 
 Samus.prototype.TeclaArribaPresionado = function(){
-	if(!this.arriba && this.derecha){
+	if(!this.arriba && this.derecha && !this.izquierda){
 		this.animations.play('DiagonalDerecha');	
-	}else if(!this.arriba && this.izquierda){
+	}else if(!this.arriba && this.izquierda && !this.derecha){
 		this.animations.play('DiagonalIzquierda');
 	}else if(!this.arriba && this.direccion == 0){
 		this.animations.play('ArribaD');
@@ -66,9 +67,100 @@ Samus.prototype.TeclaArribaPresionado = function(){
 };
 
 Samus.prototype.TeclaArribaonUp = function(){
-	
+	if(!this.derecha && !this.izquierda){
+		if(this.direccion == 0){
+			this.animations.play('QuietoDerecha')
+		}else if(this.direccion == 1){
+			this.animations.play('QuietoIzquierda')
+		}
+	}else if(this.derecha){
+		this.animations.play('Derecha');
+	}else if(this.izquierda){
+		this.animations.play('Izquierda');
+	}
 	this.arriba = false;
-}
+};
+
+Samus.prototype.TeclaDerechaPresionado = function(){
+	if(!this.arriba){
+		if(!this.abajo){
+			this.animations.play('Derecha');
+		}else if(this.abajo){
+			this.animations.play('BolitaD');
+		}
+	}else if(this.arriba){
+		this.animations.play('DiagonalDerecha');
+	}
+	this.derecha = true;
+	this.direccion = 0;
+};
+
+Samus.prototype.TeclaDerechaonUp = function(){
+	if(this.arriba){
+		this.animations.play('ArribaD');
+	}else if(this.abajo){
+		this.animations.play('AgachadoDerecha');
+	}else if (direccion == 0 ){
+		this.animations.play('QuietoDerecha');
+	}
+	this.derecha = false;
+};
+
+Samus.prototype.TeclaIzquierdaPresionado = function(){
+	if(!this.arriba){
+		if(!this.abajo){
+			this.animations.play('Izquierda');
+		}else if(this.abajo){
+			this.animations.play('BolitaI');
+		}
+	}else if (this.arriba){
+		this.animations.play('DiagonalIzquierda');
+	}
+	this.izquierda = true;
+	this.direccion = 1;
+};
+
+Samus.prototype.TeclaIzquierdaonUp = function(){
+	if(this.arriba){
+		this.animations.play('ArribaI');
+	}else if(this.abajo){
+		this.animations.play('AgachadoIzquierda');
+	}else if(direccion == 1){
+		this.animations.play('QuietoIzquierda');
+	}
+	this.izquierda = false;
+};
+
+Samus.prototype.TeclaAbajoPresionado = function(){
+	if(!this.arriba){
+		if(this.derecha){
+			this.animations.play('BolitaD');
+		}else if(this.izquierda){
+			this.animations.play('BolitaI');
+		}else if(this.direccion == 0 ){
+			this.animations.play('AgachadoDerecha');
+		}else if(this.direccion == 1){
+			this.animations.play('AgachadoIzquierda');
+		}
+	}
+	this.abajo = true;
+};
+
+Samus.prototype.TeclaAbajoonUp = function(){
+	if(!this.arriba){
+		if(this.derecha){
+			this.animations.play('Derecha');
+		}else if(this.izquierda){
+			this.animations.play('Izquierda');
+		}else if(this.direccion == 0){
+			this.animations.play('QuietoDerecha');
+		}else if(this.direccion == 1){
+			this.animations.play('QuietoIzquierda');
+		}
+	}
+
+	this.abajo = false;
+};
 
 Samus.prototype.update = function(){
 
@@ -171,13 +263,13 @@ Samus.prototype.loadAnimations = function(){
 		'QuietoDerecha/5.png'],true,false);
 
 	this.animations.add('QuietoIzquierda',[
-		'QuieroIzquierda/0.png'],true,false);
+		'QuietoIzquierda/0.png'],true,false);
 	this.animations.add('AgachadoIzquierda',[
-		'QuieroIzquierda/1.png',
-		'QuieroIzquierda/2.png',
-		'QuieroIzquierda/3.png',
-		'QuieroIzquierda/4.png',
-		'QuieroIzquierda/5.png'],true,false);
+		'QuietoIzquierda/1.png',
+		'QuietoIzquierda/2.png',
+		'QuietoIzquierda/3.png',
+		'QuietoIzquierda/4.png',
+		'QuietoIzquierda/5.png'],true,false);
 
 	this.animations.add('VolantinDerecha',[
 		'VolantinDerecha/0.png',
