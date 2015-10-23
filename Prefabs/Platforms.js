@@ -1,8 +1,8 @@
-Platform = function(game,floorPool,numTiles,x,y,speed,coinsPool){
+Platform = function(game,floorPool,numTiles,x,y,speed,enemysPool){
     Phaser.Group.call(this,game);
     this.enableBody = true;
     
-    this.coinsPool = coinsPool;
+    this.enemysPool = enemysPool;
     this.floorPool = floorPool;
     this.game = game;
     this.tileSize = 40;
@@ -13,7 +13,7 @@ Platform.prototype = Object.create(Phaser.Group.prototype);
 
 Platform.prototype.constructor = Platform;
 
-Platform.prototype.prepare = function(numTiles,x,y,speed,coinsPool){
+Platform.prototype.prepare = function(numTiles,x,y,speed,enemysPool){
   // console.log(numTiles,x,y,speed);
     this.alive = true;
     var i = 0;
@@ -32,29 +32,31 @@ Platform.prototype.prepare = function(numTiles,x,y,speed,coinsPool){
     this.setAll('body.immovable',true);
     this.setAll('body.allowGravity',false);
     this.setAll('body.velocity.x',speed);
-    this.addCoins(speed);
+    this.addEnemy(speed);
     
 }
 
-Platform.prototype.addCoins = function(speed){
-    var coinsY = 220   ;//+ Math.random()*110;
-    var hascoin;
+Platform.prototype.addEnemy = function(speed){
+    var enemyY = 220   ;//+ Math.random()*110;
+    var hasEnemy;
     this.forEach(function(tile){
-        hascoin = Math.random()<=0.4;
-        if(hascoin){
-            var coin = this.coinsPool.getFirstExists(false);//false trae muertos, true trae cualquiera
-           // console.log(coin);
-            if(!coin){
-                coin = new Phaser.Sprite(this.game,tile.x,tile.y-coinsY,'coin');
-                this.coinsPool.add(coin);
-                //console.log(coin);
+        hasEnemy = Math.random()<=0.4;
+        if(hasEnemy){
+            var enemy = this.enemysPool.getFirstExists(false);//false trae muertos, true trae cualquiera
+           // console.log(enemy);
+            if(!enemy){
+                enemy = new Phaser.Sprite(this.game,tile.x,tile.y-enemyY,'enemy');
+                enemy.animations.add('moving',[0,1,2,3,2,1],8,true);
+                enemy.play('moving');
+                this.enemysPool.add(enemy);
+                //console.log(enemy);
             }else{
-                coin.reset(tile.x,tile.y-coinsY)
+                enemy.reset(tile.x,tile.y-enemyY)
                
                
             }
-             coin.body.velocity.x = speed;
-             coin.body.allowGravity = false;
+             enemy.body.velocity.x = speed;
+             enemy.body.allowGravity = false;
         }
     },this);
     

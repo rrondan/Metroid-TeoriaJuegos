@@ -12,6 +12,7 @@ Boost.prototype = {
 	    this.game.physics.startSystem(Phaser.Physics.ARCADE);    
 
     	this.load.image('background', 'assets/images/background.png');
+    	
 
 	},
 	create:function(){
