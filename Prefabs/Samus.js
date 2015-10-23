@@ -5,13 +5,13 @@ Samus = function(game,x,y){
 
 	this.game = game;
 	this.velocidad = 150;
-	
+		game.physics.arcade.enable(this);
+
 	this.body.collideWorldBounds = true;
 	this.body.allowGravity = true;
 
 	this.anchor.setTo(0.5,0.5);
 	game.camera.follow(this);
-	game.physics.arcade.enable(this);
 
 	this.loadAnimations();
 
@@ -39,7 +39,7 @@ Samus.prototype.bindKeys = function(){
 	TeclaArriba.onDown.add(this.TeclaArribaPresionado,this);
 	TeclaArriba.onUp.add(this.TeclaArribaonUp,this);
 
-	TeclaAbajo = this.game.input.keyboard.addKey(dPhaser.Keyboard.DOWN);
+	TeclaAbajo = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
 	TeclaAbajo.onDown.add(this.TeclaAbajoPresionado,this);
 	TeclaAbajo.onUp.add(this.TeclaAbajoonUp,this);
 
@@ -100,7 +100,7 @@ Samus.prototype.TeclaDerechaonUp = function(){
 		this.animations.play('ArribaD');
 	}else if(this.abajo){
 		this.animations.play('AgachadoDerecha');
-	}else if (direccion == 0 ){
+	}else if (this.direccion == 0 ){
 		this.animations.play('QuietoDerecha');
 	}
 	this.derecha = false;
@@ -125,7 +125,7 @@ Samus.prototype.TeclaIzquierdaonUp = function(){
 		this.animations.play('ArribaI');
 	}else if(this.abajo){
 		this.animations.play('AgachadoIzquierda');
-	}else if(direccion == 1){
+	}else if(this.direccion == 1){
 		this.animations.play('QuietoIzquierda');
 	}
 	this.izquierda = false;

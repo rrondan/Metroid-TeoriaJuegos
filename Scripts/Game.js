@@ -16,25 +16,28 @@ Game.prototype = {
 		this.enemysPool.enableBody = true;
 		
 		this.background.autoScroll(-Global.worldSpeed,0);
+        this.playerLife = 10;
 
 		this.isJumping = false;
 		this.jumpPeaked = false;
 		this.startJumpY = 0;
 		this.frontStyle={front: '40px Arial',fill:'#FFCC00',stroke:'#333',strokeThickness:5};//stroke = borde
 		this.textScore = this.add.text(150,100,'Seig Heil',this.frontStyle);
-		this.textScore.text = 'Seig Heil';
+		this.textScore.text = this.playerLife;
+
 		//this.water = this.add.tileSprite(0,this.world.height-30,this.world.width,this.world.height,'water');
 	//	this.water.autoScroll(-this.worldSpeed/2,0);
 
-		this.player = this.add.sprite(50,140,'player');
-		this.player.anchor.setTo(0.5,0.5);
-		this.player.animations.add('running',[0,1,2,3,2,1],15,true);
+		//this.player = this.add.sprite(50,140,'player');
+        this.player = new Samus(this.game, 50,140);
+	/*t	this.player.anchor.setTo(0.5,0.5);
+	his.player.animations.add('running',[0,1,2,3,2,1],15,true);
 		this.player.play('running');
-        this.game.camera.follow(this.player);
+        this.game.camera.follow(this.player);*/
         this.mini_boss = this.add.sprite(2000,127,'mini_boss');
          this.wall_boss = this.add.sprite(-60,128,'wall_boss');
 
-
+  
 		this.physics.startSystem(Phaser.Physics.ARCADE);
 
 		this.physics.arcade.gravity.y = 1000;
@@ -66,21 +69,27 @@ Game.prototype = {
 		this.platformPool.add(this.currentPlatform);
         
          if(Global.refresh){
-             this.gameOver();
+             this.gameRefresh();
          }
     },
     update: function () {
         this.platformPool.forEachAlive(function (platform) {
+                this.textScore.x = this.game.camera.x;
             this.game.physics.arcade.collide(this.player, platform);
             this.game.physics.arcade.collide(this.player, this.wall_boss);
             this.game.physics.arcade.collide(this.player, this.mini_boss);
             this.game.physics.arcade.collide(this.mini_boss,platform);
+               this.game.physics.arcade.collide(this.player, this.enemysPool, this.checkCollision, null, this);
+               this.game.physics.arcade.collide( this.wall_boss, this.player,this.checkCollision, null, this);
+               this.game.physics.arcade.collide(this.player, this.mini_boss, this.checkCollision, null, this);
             if (this.currentPlatform.length && this.currentPlatform.children[this.currentPlatform.length - 1].right < 0) {
                 platform.kill();
             }
         }, this);
         //console.log(this.player.body.x );
-
+        if(this.wall_boss.body.x + this.wall_boss.width >= this.mini_boss.body.x -this.player.width-10){
+                   this.gameOver();
+        }
 
         if (this.player.body.touching.down) {
             this.player.body.velocity.x = this.worldSpeed;
@@ -129,7 +138,15 @@ this.player.body.velocity.x = 180;
         this.background.autoScroll(-Global.worldSpeed,0);
 }
     },
-    gameOver: function () {
+    gameRefresh: function () {
+        this.player.kill();
+        this.game.world.remove(this.background);
+     //<   this.game.world.remove(this.water);
+     Global.refresh = false;
+        this.game.state.start('Game');
+
+
+    },    gameOver: function () {
         this.player.kill();
         this.game.world.remove(this.background);
      //<   this.game.world.remove(this.water);
@@ -178,6 +195,16 @@ this.player.body.velocity.x = 180;
             }
             this.platformPool.add(this.currentPlatform);
         }
-    }
+    },
+     reduceLife:function(){
+console.log("seig heil");
+this.player.velocity.x = 400;
+this.player.velocity.y = -200;
+this.playerLife--;
+if(this.playerLife <= 0){
+  this.gameOver();
 
+}
+
+}
 }
