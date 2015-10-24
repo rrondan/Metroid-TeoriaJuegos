@@ -17,6 +17,7 @@ Game.prototype = {
 		
 		this.background.autoScroll(-Global.worldSpeed,0);
         this.playerLife = 10;
+        this.boss_life=20;
 
 		this.isJumping = false;
 		this.jumpPeaked = false;
@@ -25,16 +26,19 @@ Game.prototype = {
 		this.textScore = this.add.text(150,100,'Seig Heil',this.frontStyle);
 		this.textScore.text = this.playerLife;
 
-		//this.water = this.add.tileSprite(0,this.world.height-30,this.world.width,this.world.height,'water');
-	//	this.water.autoScroll(-this.worldSpeed/2,0);
+        this.bullets = this.add.group();
+        this.bullets.enableBody = true;
+      //  this.bullets.body.allowGravity = false; 
+		this.player = this.add.sprite(24,48,'player');
+     //this.player = new Samus(this.game, 50,140);
+    //this.player.bringToTop();
 
-		//this.player = this.add.sprite(50,140,'player');
-        this.player = new Samus(this.game, 50,140);
-	/*t	this.player.anchor.setTo(0.5,0.5);
-	his.player.animations.add('running',[0,1,2,3,2,1],15,true);
+		this.player.anchor.setTo(0.5,0.5);
+	this.player.animations.add('running',[0,1,2,3,2,1],15,true);
 		this.player.play('running');
-        this.game.camera.follow(this.player);*/
-        this.mini_boss = this.add.sprite(2000,127,'mini_boss');
+       
+       this.game.camera.follow(this.player);
+        this.mini_boss = this.add.sprite(400,127,'mini_boss');
          this.wall_boss = this.add.sprite(-60,128,'wall_boss');
 
   
@@ -113,18 +117,28 @@ if(!this.cursors.left.isDown && !this.cursors.right.isDown){
 }
         if(this.cursors.left.isDown){
 this.player.body.velocity.x = -250;
-//this.player.body.acceleration.x-=50;
-//this.player.play('walking') ;
-//this.player.scale.setTo(1,1);}
+
+
+        this.player.anchor.setTo(0.5,0.5);
         Global.worldSpeed = -200;
+        this.createBullet(-this.player.body.velocity.x -150 + Global.worldSpeed,0)
         this.background.autoScroll(-Global.worldSpeed,0);
 
 }
         if(this.cursors.right.isDown){
 this.player.body.velocity.x = 250;
+this.createBullet(this.player.body.velocity.x +150,0)
+
 //this.player.body.acceleration.x-=50;
 //this.player.play('walking') ;
 //this.player.scale.setTo(1,1);}
+//this.player = this.add.sprite(50,140,'right_run');
+       // this.player = new Samus(this.game, 50,140);
+    //this.player.bringToTop();
+
+        //this.player.anchor.setTo(0.5,0.5);
+    //this.player.animations.add('right_run',[0,1,2,3,4,5,6,7,8,9,10,11],15,true);
+     //   this.player.play('right_run');
         Global.worldSpeed = 200;
         this.background.autoScroll(-Global.worldSpeed,0);
 }
@@ -137,6 +151,12 @@ this.player.body.velocity.x = 180;
         Global.worldSpeed = 200;
         this.background.autoScroll(-Global.worldSpeed,0);
 }
+    },  render: function(){
+    //    this.game.debug.body(this.player.referencePoint);
+
+    //    this.game.debug.body(this.player);
+
+        //this.game.debug.bodyInfo(this.lobomon, 32, 32);
     },
     gameRefresh: function () {
         this.player.kill();
@@ -151,8 +171,27 @@ this.player.body.velocity.x = 180;
         this.game.world.remove(this.background);
      //<   this.game.world.remove(this.water);
      Global.refresh = false;
-        this.game.state.start('Game');
+        this.game.state.start('GameOver');
 
+
+    },
+        createBullet:function(x,y){
+
+        var bullet = this.bullets.getFirstDead(false);
+
+        if(!bullet){
+            bullet = this.game.add.sprite(0,0,'bullet');
+            bullet.x = this.player.body.x;
+     
+            bullet.y = this.player.body.y-10;
+            this.physics.arcade.enable(bullet);
+           bullet.body.allowGravity = false; 
+            this.bullets.add(bullet);
+        }
+    
+        bullet.body.collideWorldBounds = true;
+        bullet.body.velocity.x = x;
+        bullet.body.velocity.y = y;
 
     },
 

@@ -10,8 +10,8 @@ Samus = function(game,x,y){
 	this.body.collideWorldBounds = true;
 	this.body.allowGravity = true;
 
-	this.anchor.setTo(0.5,0.5);
-	game.camera.follow(this);
+	//this.anchor.setTo(0.5,0.5);
+	//game.camera.follow(this);
 
 	this.loadAnimations();
 
@@ -22,8 +22,10 @@ Samus = function(game,x,y){
 	this.arriba = false;
 	this.abajo = false;
 	this.direccion = 0; //Derecha = 0 , Izquierda = 1
-
-
+	this.referencePoint = game.make.sprite(10, 0, null);
+	game.physics.enable(this.referencePoint);
+		this.referencePoint.body.allowGravity = false;
+	this.addChild(this.referencePoint);
 	this.bindKeys();
 
 	this.animations.play('ParadoDerecha');
@@ -51,20 +53,28 @@ Samus.prototype.bindKeys = function(){
 	TeclaIzquierda.onDown.add(this.TeclaIzquierdaPresionado,this);
 	TeclaIzquierda.onUp.add(this.TeclaIzquierdaonUp,this);
 
+
 };
 
+
+
+
 Samus.prototype.TeclaArribaPresionado = function(){
-	if(!this.arriba && this.derecha && !this.izquierda){
+	if( this.derecha && !this.izquierda){
 		this.animations.play('DiagonalDerecha');	
-	}else if(!this.arriba && this.izquierda && !this.derecha){
+		this.body.velocity.x = 200;
+	}else if( this.izquierda && !this.derecha){
 		this.animations.play('DiagonalIzquierda');
-	}else if(!this.arriba && this.direccion == 0){
+		this.body.velocity.x = -200;
+	}else if( this.direccion == 0){
 		this.animations.play('ArribaD');
-	}else if(!this.arriba && this.direccion == 1){
+	}else if( this.direccion == 1){
 		this.animations.play('ArribaI');
 	}
 	this.arriba = true;	
 };
+
+
 
 Samus.prototype.TeclaArribaonUp = function(){
 	if(!this.derecha && !this.izquierda){
@@ -85,11 +95,17 @@ Samus.prototype.TeclaDerechaPresionado = function(){
 	if(!this.arriba){
 		if(!this.abajo){
 			this.animations.play('Derecha');
+		this.body.velocity.x = 200;
+
 		}else if(this.abajo){
 			this.animations.play('BolitaD');
+		this.body.velocity.x = 200;
+
 		}
 	}else if(this.arriba){
 		this.animations.play('DiagonalDerecha');
+		this.body.velocity.x = 200;
+
 	}
 	this.derecha = true;
 	this.direccion = 0;
