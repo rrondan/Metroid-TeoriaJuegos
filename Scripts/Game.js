@@ -115,7 +115,7 @@ if(!this.cursors.left.isDown && !this.cursors.right.isDown){
 
         this.background.autoScroll(0,0);
 }
-        if(this.cursors.left.isDown){
+        if(this.cursors.left.isDown && !this.cursors.up.isDown){
 this.player.body.velocity.x = -250;
 
 
@@ -125,20 +125,11 @@ this.player.body.velocity.x = -250;
         this.background.autoScroll(-Global.worldSpeed,0);
 
 }
-        if(this.cursors.right.isDown){
+        if(this.cursors.right.isDown&& !this.cursors.up.isDown){
 this.player.body.velocity.x = 250;
 this.createBullet(this.player.body.velocity.x +150,0)
 
-//this.player.body.acceleration.x-=50;
-//this.player.play('walking') ;
-//this.player.scale.setTo(1,1);}
-//this.player = this.add.sprite(50,140,'right_run');
-       // this.player = new Samus(this.game, 50,140);
-    //this.player.bringToTop();
 
-        //this.player.anchor.setTo(0.5,0.5);
-    //this.player.animations.add('right_run',[0,1,2,3,4,5,6,7,8,9,10,11],15,true);
-     //   this.player.play('right_run');
         Global.worldSpeed = 200;
         this.background.autoScroll(-Global.worldSpeed,0);
 }
