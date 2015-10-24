@@ -86,9 +86,9 @@ Game.prototype = {
         });*/
 
 
-        /*    this.enemysPool.forEach(function(enemy){
-        this.createMonsterBullet(enemy.x,enemy.y);
-        });*/
+     //    this.enemysPool.forEachAlive(function(enemy){
+     //   this.createMonsterBullet(0,0);
+   //     });
         this.platformPool.forEachAlive(function (platform) {
                 this.textScore.x = this.game.camera.x;
             this.game.physics.arcade.collide(this.player, platform);
@@ -187,13 +187,21 @@ this.player.body.velocity.x = 180;
 }*/
 
     this.game.physics.arcade.collide(this.mini_boss, this.bullets, this.checkCollision, null, this);
+    this.game.physics.arcade.collide(this.player, this.bullets, this.checkMonsterCollision, null, this);
 
     },
 
-    checkCollision: function() {
+    checkCollision: function(bullet) {
 this.boss_life--; // sp2.destroy();
-
+bullet.kill();
 if(this.boss_life<=0){
+    this.gameOver();
+}
+  },
+    checkMonsterCollision: function() {
+this.player--; // sp2.destroy();
+
+if(this.player<=0){
     this.gameOver();
 }
   },
