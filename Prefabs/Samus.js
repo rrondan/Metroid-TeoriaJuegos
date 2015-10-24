@@ -1,21 +1,30 @@
 //SAMUS JS
-Samus = function(game,x,y){
+Samus = function(game,x,y,background){
 
 	Phaser.Sprite.call(this,game,x,y,'SammusAssets');
 
 	this.game = game;
+	this.background = background;
 	this.velocidad = 150;
-		game.physics.arcade.enable(this);
+
+	game.physics.arcade.enable(this);
 
 	this.body.collideWorldBounds = true;
 	this.body.allowGravity = true;
 
-	//this.anchor.setTo(0.5,0.5);
-	//game.camera.follow(this);
+	this.anchor.setTo(0.5,0.5);
+	game.camera.follow(this);
+	game.physics.arcade.enable(this);
 
 	this.loadAnimations();
 
+	game.add.existing(this);
+
 	this.inputEnabled = true;
+
+	this.bindKeys();
+
+	this.animations.play('ParadoDerecha');
 
 	this.derecha = true;
 	this.izquierda = false;
@@ -26,9 +35,6 @@ Samus = function(game,x,y){
 	game.physics.enable(this.referencePoint);
 		this.referencePoint.body.allowGravity = false;
 	this.addChild(this.referencePoint);
-	this.bindKeys();
-
-	this.animations.play('ParadoDerecha');
 
 };
 
@@ -57,8 +63,6 @@ Samus.prototype.bindKeys = function(){
 };
 
 
-
-
 Samus.prototype.TeclaArribaPresionado = function(){
 	if( this.derecha && !this.izquierda){
 		this.animations.play('DiagonalDerecha');	
@@ -68,8 +72,10 @@ Samus.prototype.TeclaArribaPresionado = function(){
 		this.body.velocity.x = -200;
 	}else if( this.direccion == 0){
 		this.animations.play('ArribaD');
+		this.body.velocity.x = 0;
 	}else if( this.direccion == 1){
 		this.animations.play('ArribaI');
+		this.body.velocity.x = 0;
 	}
 	this.arriba = true;	
 };
@@ -80,8 +86,10 @@ Samus.prototype.TeclaArribaonUp = function(){
 	if(!this.derecha && !this.izquierda){
 		if(this.direccion == 0){
 			this.animations.play('QuietoDerecha')
+			this.body.velocity.x = 0;
 		}else if(this.direccion == 1){
 			this.animations.play('QuietoIzquierda')
+			this.body.velocity.x = 0;
 		}
 	}else if(this.derecha){
 		this.animations.play('Derecha');
@@ -114,10 +122,13 @@ Samus.prototype.TeclaDerechaPresionado = function(){
 Samus.prototype.TeclaDerechaonUp = function(){
 	if(this.arriba){
 		this.animations.play('ArribaD');
+		this.body.velocity.x = 0;
 	}else if(this.abajo){
 		this.animations.play('AgachadoDerecha');
+		this.body.velocity.x = 0;
 	}else if (this.direccion == 0 ){
 		this.animations.play('QuietoDerecha');
+		this.body.velocity.x = 0;
 	}
 	this.derecha = false;
 };
@@ -137,12 +148,15 @@ Samus.prototype.TeclaIzquierdaPresionado = function(){
 };
 
 Samus.prototype.TeclaIzquierdaonUp = function(){
-	if(this.arriba){
+	if(this.arriba && !this.derecha){
 		this.animations.play('ArribaI');
+		this.body.velocity.x = 0;
 	}else if(this.abajo){
 		this.animations.play('AgachadoIzquierda');
+		this.body.velocity.x = 0;
 	}else if(this.direccion == 1){
 		this.animations.play('QuietoIzquierda');
+		this.body.velocity.x = 0;
 	}
 	this.izquierda = false;
 };
@@ -155,8 +169,10 @@ Samus.prototype.TeclaAbajoPresionado = function(){
 			this.animations.play('BolitaI');
 		}else if(this.direccion == 0 ){
 			this.animations.play('AgachadoDerecha');
+			this.body.velocity.x = 0;
 		}else if(this.direccion == 1){
 			this.animations.play('AgachadoIzquierda');
+			this.body.velocity.x = 0;
 		}
 	}
 	this.abajo = true;
@@ -170,16 +186,30 @@ Samus.prototype.TeclaAbajoonUp = function(){
 			this.animations.play('Izquierda');
 		}else if(this.direccion == 0){
 			this.animations.play('QuietoDerecha');
+			this.body.velocity.x = 0;
 		}else if(this.direccion == 1){
 			this.animations.play('QuietoIzquierda');
+			this.body.velocity.x = 0;
 		}
 	}
+
 
 	this.abajo = false;
 };
 
 Samus.prototype.update = function(){
 
+
+/*    if (this.body.touching.down) {
+        this.body.velocity.x = this.worldSpeed;
+    } else {
+        
+    }
+*/
+	if(!this.derecha && !this.izquierda)
+	{
+		this.background.autoScroll(0,0);
+	}
 };
 
 Samus.prototype.loadAnimations = function(){
@@ -201,7 +231,7 @@ Samus.prototype.loadAnimations = function(){
 		'Bolita/9.png',
 		'Bolita/10.png',
 		'Bolita/1.png',
-		'Bolita/0.png'],15,false,false);
+		'Bolita/0.png'],15,true,false);
 	this.animations.add('BolitaI',[
 		'Bolita/12.png',
 		'Bolita/11.png',
@@ -215,7 +245,7 @@ Samus.prototype.loadAnimations = function(){
 		'Bolita/3.png',
 		'Bolita/2.png',
 		'Bolita/11.png',
-		'Bolita/12.png'],15,false,false);
+		'Bolita/12.png'],15,true,false);
 
 	this.animations.add('Derecha',[
 		'Derecha/0.png',
@@ -228,7 +258,7 @@ Samus.prototype.loadAnimations = function(){
 		'Derecha/7.png',
 		'Derecha/8.png',
 		'Derecha/9.png',
-		'Derecha/10.png'],true,false);
+		'Derecha/10.png'],15,true,false);
 
 	this.animations.add('DiagonalDerecha',[
 		'DiagonalDerecha/0.png',
@@ -242,7 +272,7 @@ Samus.prototype.loadAnimations = function(){
 		'DiagonalDerecha/8.png',
 		'DiagonalDerecha/9.png',
 		'DiagonalDerecha/10.png',
-		'DiagonalDerecha/11.png'],true,false);
+		'DiagonalDerecha/11.png'],15,true,false);
 
 	this.animations.add('DiagonalIzquierda',[
 		'DiagonalIzquierda/0.png',
@@ -255,7 +285,7 @@ Samus.prototype.loadAnimations = function(){
 		'DiagonalIzquierda/7.png',
 		'DiagonalIzquierda/8.png',
 		'DiagonalIzquierda/9.png',
-		'DiagonalIzquierda/10.png'],true,false);
+		'DiagonalIzquierda/10.png'],15,true,false);
 
 	this.animations.add('Izquierda',[
 		'Izquierda/0.png',
@@ -267,7 +297,7 @@ Samus.prototype.loadAnimations = function(){
 		'Izquierda/6.png',
 		'Izquierda/7.png',
 		'Izquierda/8.png',
-		'Izquierda/9.png'],true,false);
+		'Izquierda/9.png'],15,true,false);
 
 	this.animations.add('QuietoDerecha',[
 		'QuietoDerecha/0.png'],true,false);
@@ -276,7 +306,7 @@ Samus.prototype.loadAnimations = function(){
 		'QuietoDerecha/2.png',
 		'QuietoDerecha/3.png',
 		'QuietoDerecha/4.png',
-		'QuietoDerecha/5.png'],true,false);
+		'QuietoDerecha/5.png'],15,true,false);
 
 	this.animations.add('QuietoIzquierda',[
 		'QuietoIzquierda/0.png'],true,false);
@@ -285,7 +315,7 @@ Samus.prototype.loadAnimations = function(){
 		'QuietoIzquierda/2.png',
 		'QuietoIzquierda/3.png',
 		'QuietoIzquierda/4.png',
-		'QuietoIzquierda/5.png'],true,false);
+		'QuietoIzquierda/5.png'],15,true,false);
 
 	this.animations.add('VolantinDerecha',[
 		'VolantinDerecha/0.png',
@@ -296,7 +326,7 @@ Samus.prototype.loadAnimations = function(){
 		'VolantinDerecha/5.png',
 		'VolantinDerecha/6.png',
 		'VolantinDerecha/7.png',
-		'VolantinDerecha/8.png'],false,false);
+		'VolantinDerecha/8.png'],15,false,false);
 
 	this.animations.add('VolantinIzquierda',[
 		'VolantinIzquierda/0.png',
@@ -307,6 +337,6 @@ Samus.prototype.loadAnimations = function(){
 		'VolantinIzquierda/5.png',
 		'VolantinIzquierda/6.png',
 		'VolantinIzquierda/7.png',
-		'VolantinIzquierda/8.png'],false,false);
+		'VolantinIzquierda/8.png'],15,false,false);
 
 };
