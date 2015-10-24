@@ -38,7 +38,7 @@ Samus = function(game,x,y,background,bullets){
 	this.addChild(this.referencePoint);
 
 	this.elapsed = 0;
-	this.limit = 250;
+	this.limit = 1000;
 
 };
 
@@ -70,16 +70,16 @@ Samus.prototype.bindKeys = function(){
 Samus.prototype.TeclaArribaPresionado = function(){
 	if( this.derecha && !this.izquierda){
 		this.animations.play('DiagonalDerecha');	
-		this.body.velocity.x = 200;
+		//this.body.velocity.x = 200;
 	}else if( this.izquierda && !this.derecha){
 		this.animations.play('DiagonalIzquierda');
-		this.body.velocity.x = -200;
+	//	this.body.velocity.x = -200;
 	}else if( this.direccion == 0){
 		this.animations.play('ArribaD');
-		this.body.velocity.x = 0;
+		//this.body.velocity.x = 0;
 	}else if( this.direccion == 1){
 		this.animations.play('ArribaI');
-		this.body.velocity.x = 0;
+	//	this.body.velocity.x = 0;
 	}
 	this.arriba = true;	
 };
@@ -107,16 +107,16 @@ Samus.prototype.TeclaDerechaPresionado = function(){
 	if(!this.arriba){
 		if(!this.abajo){
 			this.animations.play('Derecha');
-		this.body.velocity.x = 200;
+		//this.body.velocity.x = 200;
 
 		}else if(this.abajo){
 			this.animations.play('BolitaD');
-		this.body.velocity.x = 200;
+	//	this.body.velocity.x = 200;
 
 		}
 	}else if(this.arriba){
 		this.animations.play('DiagonalDerecha');
-		this.body.velocity.x = 200;
+	//	this.body.velocity.x = 200;
 
 	}
 	this.derecha = true;
@@ -202,18 +202,31 @@ Samus.prototype.TeclaAbajoonUp = function(){
 };
 
 Samus.prototype.update = function(){
+console.log(this.body.velocity.x);
 
 
-	if(!this.derecha && !this.izquierda)
+	if(!this.derecha && !this.izquierda && !this.body.touching.down)
 	{
+		this.body.velocity.x =0;
 		this.background.autoScroll(0,0);
 	}
+
+	 if(!this.izquierda && this.arriba && !this.derecha){
+            this.body.velocity.x = 0;
+
+			this.elapsed+= this.game.time.elapsed;
+            
+            if(this.elapsed>=this.limit){
+                this.elapsed = 0;
+            	this.createBullet(0 ,-100,10);
+            }
+  }
 
 	if(this.izquierda && !this.arriba){
 
             this.body.velocity.x = -250;
 
-            this.anchor.setTo(0.5,0.5);
+         //   this.anchor.setTo(0.5,0.5);
             Global.worldSpeed = -200;
             this.elapsed+= this.game.time.elapsed;
             

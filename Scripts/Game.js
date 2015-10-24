@@ -66,7 +66,7 @@ Game.prototype = {
 
 		this.platformPool.add(this.currentPlatform);
 
-        this.player = new Samus(this.game,24,48,this.background,this.bullets);
+        this.player = new Samus(this.game,48,100,this.background,this.bullets);
 
         
         if(Global.refresh){
@@ -85,6 +85,7 @@ Game.prototype = {
         //    this.enemysPool.forEachAlive(function(enemy){
         //   this.createMonsterBullet(0,0);
         //     });
+console.log(this.player.body.velocity.x);
         this.platformPool.forEachAlive(function (platform) {
                 this.textScore.x = this.game.camera.x;
             this.game.physics.arcade.collide(this.player, platform);
@@ -134,9 +135,9 @@ this.player.body.velocity.x = 180;
 
     },
 
-    checkCollision: function(bullet) {
+    checkCollision: function(mini_boss,bullet) {
         this.boss_life--; // sp2.destroy();
-        bullet.kill();
+        //bullet.kill();
         if(this.boss_life<=0){
             this.gameOver();
         }
@@ -242,8 +243,8 @@ this.player.body.velocity.x = 180;
     
     reduceLife:function(){
         console.log("seig heil");
-        this.player.velocity.x = 400;
-        this.player.velocity.y = -200;
+       // this.player.velocity.x = 400;
+      //  this.player.velocity.y = -200;
         this.playerLife--;
         if(this.playerLife <= 0){
           this.gameOver();
