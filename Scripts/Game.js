@@ -28,7 +28,7 @@ Game.prototype = {
 
         this.bullets = this.add.group();
         this.bullets.enableBody = true;
-      //  this.bullets.body.allowGravity = false; 
+       
 /*		this.player = this.add.sprite(24,48,'player');
 
 		this.player.anchor.setTo(0.5,0.5);
@@ -66,7 +66,7 @@ Game.prototype = {
 
 		this.platformPool.add(this.currentPlatform);
 
-        this.player = new Samus(this.game,24,48,this.background);
+        this.player = new Samus(this.game,24,48,this.background,this.bullets);
 
         
         if(Global.refresh){
@@ -120,59 +120,6 @@ Game.prototype = {
         }
 
 
-        if(this.cursors.left.isDown && !this.cursors.up.isDown){
-            this.player.body.velocity.x = -250;
-
-
-            this.player.anchor.setTo(0.5,0.5);
-            Global.worldSpeed = -200;
-            this.elapsed+= this.game.time.elapsed;
-            
-            if(this.elapsed>=this.limit){
-                this.elapsed = 0;
-            this.createBullet(this.player.body.velocity.x -150 ,0,0);
-            }
-       
-            this.background.autoScroll(-Global.worldSpeed,0);
-
-        }
-
-        if(this.cursors.right.isDown && !this.cursors.up.isDown){
-        
-            this.player.body.velocity.x = 250;
-            this.elapsed+= this.game.time.elapsed;
-            if(this.elapsed>=this.limit){
-                this.elapsed = 0;
-                this.createBullet(this.player.body.velocity.x + 150,0,40);
-            }
-
-            Global.worldSpeed = 200;
-            this.background.autoScroll(-Global.worldSpeed,0);
-        }
-
-        if(this.cursors.up.isDown && this.cursors.right.isDown && !this.cursors.left.isDown){
-            this.player.body.velocity.x = 250;
-         this.elapsed+= this.game.time.elapsed;
-        if(this.elapsed>=this.limit){
-            this.elapsed = 0;
-        this.createBullet(this.player.body.velocity.x + 150,-50,40);
-        }
-
-        Global.worldSpeed = 200;
-        this.background.autoScroll(-Global.worldSpeed,0);
-}
-
-        if(this.cursors.up.isDown && !this.cursors.right.isDown && this.cursors.left.isDown){
-this.player.body.velocity.x = -250;
-         this.elapsed+= this.game.time.elapsed;
-        if(this.elapsed>=this.limit){
-            this.elapsed = 0;
-        this.createBullet(this.player.body.velocity.x - 150,-50,0);
-        }
-
-        Global.worldSpeed = 200;
-        this.background.autoScroll(-Global.worldSpeed,0);
-}
        /*if(this.cursors.up.isDown){
 this.player.body.velocity.x = 180;
 //this.player.body.acceleration.x-=50;
@@ -230,27 +177,7 @@ this.player.body.velocity.x = 180;
 
     },
     
-    createBullet:function(x,y,px){
-
-        var bullet = this.bullets.getFirstDead(false);
-
-        if(!bullet){
-            bullet = this.game.add.sprite(0,0,'bullet');
-
-            bullet.x = this.player.body.x+px;
-     
-            bullet.y = this.player.body.y-10;
-            this.physics.arcade.enable(bullet);
-           bullet.body.allowGravity = false; 
-            this.bullets.add(bullet);
-        }
-    
-        bullet.body.collideWorldBounds = true;
-        bullet.body.velocity.x = x;
-        bullet.body.velocity.y = y;
-
-    },
-
+  
     createMonsterBullet:function(x,y){
 
         var bullet = this.bullets.getFirstDead(false);

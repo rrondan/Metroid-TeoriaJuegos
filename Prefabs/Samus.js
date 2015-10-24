@@ -1,11 +1,12 @@
 //SAMUS JS
-Samus = function(game,x,y,background){
+Samus = function(game,x,y,background,bullets){
 
 	Phaser.Sprite.call(this,game,x,y,'SammusAssets');
 
 	this.game = game;
 	this.background = background;
 	this.velocidad = 150;
+	this.bullets = bullets;
 
 	game.physics.arcade.enable(this);
 
@@ -35,6 +36,9 @@ Samus = function(game,x,y,background){
 	game.physics.enable(this.referencePoint);
 		this.referencePoint.body.allowGravity = false;
 	this.addChild(this.referencePoint);
+
+	this.elapsed = 0;
+	this.limit = 250;
 
 };
 
@@ -200,17 +204,89 @@ Samus.prototype.TeclaAbajoonUp = function(){
 Samus.prototype.update = function(){
 
 
-/*    if (this.body.touching.down) {
-        this.body.velocity.x = this.worldSpeed;
-    } else {
-        
-    }
-*/
 	if(!this.derecha && !this.izquierda)
 	{
 		this.background.autoScroll(0,0);
 	}
+
+	if(this.izquierda && !this.arriba){
+
+            this.body.velocity.x = -250;
+
+            this.anchor.setTo(0.5,0.5);
+            Global.worldSpeed = -200;
+            this.elapsed+= this.game.time.elapsed;
+            
+            if(this.elapsed>=this.limit){
+                this.elapsed = 0;
+            	this.createBullet(this.body.velocity.x -150 ,0,0);
+            }
+            this.background.autoScroll(-Global.worldSpeed,0);
+	}
+
+    if(this.derecha && !this.arriba){
+            this.body.velocity.x = 250;
+            this.elapsed+= this.game.time.elapsed;
+            if(this.elapsed>=this.limit){
+                this.elapsed = 0;
+                this.createBullet(this.body.velocity.x + 150,0,40);
+            }
+
+            Global.worldSpeed = 200;
+            this.background.autoScroll(-Global.worldSpeed,0);
+    }
+
+    if(this.arriba && this.derecha && !this.izquierda){
+        this.body.velocity.x = 250;
+        this.elapsed+= this.game.time.elapsed;
+        if(this.elapsed>=this.limit){
+            this.elapsed = 0;
+        this.createBullet(this.body.velocity.x + 150,-50,40);
+        }
+
+        Global.worldSpeed = 200;
+        this.background.autoScroll(-Global.worldSpeed,0);
+	}
+
+	if(this.arriba && !this.derecha && this.izquierda){
+		
+		this.body.velocity.x = -250;
+        this.elapsed+= this.game.time.elapsed;
+        if(this.elapsed>=this.limit){
+            this.elapsed = 0;
+        this.createBullet(this.body.velocity.x - 150,-50,0);
+        }
+
+        Global.worldSpeed = 200;
+        this.background.autoScroll(-Global.worldSpeed,0);
+
+	}
+
+
+
 };
+
+Samus.prototype.createBullet = function(x,y,px){
+
+        var bullet = this.bullets.getFirstDead(false);
+
+        if(!bullet){
+            bullet = this.game.add.sprite(0,0,'bullet');
+
+            bullet.x = this.body.x+px;
+     
+            bullet.y = this.body.y-10;
+            this.game.physics.arcade.enable(bullet);
+            bullet.body.allowGravity = false; 
+            this.bullets.add(bullet);
+        }
+    
+        bullet.body.collideWorldBounds = true;
+        bullet.body.velocity.x = x;
+        bullet.body.velocity.y = y;
+
+    },
+
 
 Samus.prototype.loadAnimations = function(){
 	this.animations.add('ArribaD',[
