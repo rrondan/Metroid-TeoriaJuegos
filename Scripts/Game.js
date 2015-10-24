@@ -38,7 +38,7 @@ Game.prototype = {
 		this.player.play('running');
        
        this.game.camera.follow(this.player);
-        this.mini_boss = this.add.sprite(400,127,'mini_boss');
+        this.mini_boss = this.add.sprite(2000,127,'mini_boss');
          this.wall_boss = this.add.sprite(-60,128,'wall_boss');
 
   
@@ -59,7 +59,8 @@ Game.prototype = {
       //  this.mini_boss.body.x = 1000;
     //    this.mini_boss.body.y =-10;
  
-
+        this.elapsed = 0;
+        this.limit = 250;
 
 
 
@@ -77,6 +78,17 @@ Game.prototype = {
          }
     },
     update: function () {
+
+          /*      this.bullets.forEach(function(element){
+            if(element.x < 10 || element.x > 20000 || element.y > 600 || element.y <0){
+                element.kill();
+            }
+        });*/
+
+
+        /*    this.enemysPool.forEach(function(enemy){
+        this.createMonsterBullet(enemy.x,enemy.y);
+        });*/
         this.platformPool.forEachAlive(function (platform) {
                 this.textScore.x = this.game.camera.x;
             this.game.physics.arcade.collide(this.player, platform);
@@ -121,28 +133,72 @@ this.player.body.velocity.x = -250;
 
         this.player.anchor.setTo(0.5,0.5);
         Global.worldSpeed = -200;
-        this.createBullet(-this.player.body.velocity.x -150 + Global.worldSpeed,0)
+         this.elapsed+= this.game.time.elapsed;
+        if(this.elapsed>=this.limit){
+            this.elapsed = 0;
+        this.createBullet(this.player.body.velocity.x -150 ,0,0);
+        }
+
+   
         this.background.autoScroll(-Global.worldSpeed,0);
 
 }
-        if(this.cursors.right.isDown&& !this.cursors.up.isDown){
+        if(this.cursors.right.isDown && !this.cursors.up.isDown){
 this.player.body.velocity.x = 250;
-this.createBullet(this.player.body.velocity.x +150,0)
+         this.elapsed+= this.game.time.elapsed;
+        if(this.elapsed>=this.limit){
+            this.elapsed = 0;
+        this.createBullet(this.player.body.velocity.x + 150,0,40);
+        }
 
+        Global.worldSpeed = 200;
+        this.background.autoScroll(-Global.worldSpeed,0);
+}
+        if(this.cursors.up.isDown && this.cursors.right.isDown && !this.cursors.left.isDown){
+this.player.body.velocity.x = 250;
+         this.elapsed+= this.game.time.elapsed;
+        if(this.elapsed>=this.limit){
+            this.elapsed = 0;
+        this.createBullet(this.player.body.velocity.x + 150,-50,40);
+        }
 
         Global.worldSpeed = 200;
         this.background.autoScroll(-Global.worldSpeed,0);
 }
 
-       if(this.cursors.up.isDown){
+        if(this.cursors.up.isDown && !this.cursors.right.isDown && this.cursors.left.isDown){
+this.player.body.velocity.x = -250;
+         this.elapsed+= this.game.time.elapsed;
+        if(this.elapsed>=this.limit){
+            this.elapsed = 0;
+        this.createBullet(this.player.body.velocity.x - 150,-50,0);
+        }
+
+        Global.worldSpeed = 200;
+        this.background.autoScroll(-Global.worldSpeed,0);
+}
+       /*if(this.cursors.up.isDown){
 this.player.body.velocity.x = 180;
 //this.player.body.acceleration.x-=50;
 //this.player.play('walking') ;
 //this.player.scale.setTo(1,1);}
         Global.worldSpeed = 200;
         this.background.autoScroll(-Global.worldSpeed,0);
+}*/
+
+    this.game.physics.arcade.collide(this.mini_boss, this.bullets, this.checkCollision, null, this);
+
+    },
+
+    checkCollision: function() {
+this.boss_life--; // sp2.destroy();
+
+if(this.boss_life<=0){
+    this.gameOver();
 }
-    },  render: function(){
+  },
+
+      render: function(){
     //    this.game.debug.body(this.player.referencePoint);
 
     //    this.game.debug.body(this.player);
@@ -166,13 +222,14 @@ this.player.body.velocity.x = 180;
 
 
     },
-        createBullet:function(x,y){
+        createBullet:function(x,y,px){
 
         var bullet = this.bullets.getFirstDead(false);
 
         if(!bullet){
             bullet = this.game.add.sprite(0,0,'bullet');
-            bullet.x = this.player.body.x;
+
+            bullet.x = this.player.body.x+px;
      
             bullet.y = this.player.body.y-10;
             this.physics.arcade.enable(bullet);
@@ -183,6 +240,26 @@ this.player.body.velocity.x = 180;
         bullet.body.collideWorldBounds = true;
         bullet.body.velocity.x = x;
         bullet.body.velocity.y = y;
+
+    },
+
+            createMonsterBullet:function(x,y){
+
+        var bullet = this.bullets.getFirstDead(false);
+
+        if(!bullet){
+            bullet = this.game.add.sprite(0,0,'bullet');
+            bullet.x =x;
+     
+            bullet.y = y+10;
+            this.physics.arcade.enable(bullet);
+           bullet.body.allowGravity = false; 
+            this.bullets.add(bullet);
+        }
+    
+        bullet.body.collideWorldBounds = true;
+        bullet.body.velocity.x = 0;
+        bullet.body.velocity.y = 50;
 
     },
 
