@@ -151,7 +151,7 @@ Game.prototype = {
         }
 
         if(this.cursors.up.isDown && this.cursors.right.isDown && !this.cursors.left.isDown){
-this.player.body.velocity.x = 250;
+            this.player.body.velocity.x = 250;
          this.elapsed+= this.game.time.elapsed;
         if(this.elapsed>=this.limit){
             this.elapsed = 0;
